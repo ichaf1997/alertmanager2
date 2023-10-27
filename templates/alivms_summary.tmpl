@@ -1,0 +1,3 @@
+{{ define "alivms_summary" -}}
+[{{ .CommonLabels.severity }}]级别{{ .CommonLabels.alertname }}告警出现,共{{ .Alerts | len }}个,请在企业微信查看详情
+{{- end }}

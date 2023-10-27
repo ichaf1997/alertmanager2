@@ -1,0 +1,13 @@
+[Unit]
+Description=Alertmanager2 webhook service
+After=network.target
+
+[Service]
+Type=simple
+
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStart=/usr/local/bin/alertmanager2
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alertmanager2
+  labels:
+    app: alertmanager2
+spec:
+  selector:
+    matchLabels:
+      app: alertmanager2
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: alertmanager2
+    spec:
+      containers:
+      - name: alertmanager2
+        image: alertmanager2:latest
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: 200m
+            memory: 500Mi
+          limits:
+            cpu: 1000m
+            memory: 1000Mi
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 5
+          timeoutSeconds: 3
+          successThreshold: 1
+          failureThreshold: 3
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /_status/healthz
+            port: 8080
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+          periodSeconds: 10
+        env:
+        - name: ALICLOUD_AK
+          valueFrom:
+            secretKeyRef:
+              name: alertmanager2
+              key: ALICLOUD_AK
+        - name: ALICLOUD_AS
+          valueFrom:
+            secretKeyRef:
+              name: alertmanager2
+              key: ALICLOUD_AS
+        ports:
+        - containerPort: 8080
+          name: alertmanager2
+        command:
+        - /app/alertmanager2
+        - --log.level=debug
+      restartPolicy: Always
+---

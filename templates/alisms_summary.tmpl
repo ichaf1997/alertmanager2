@@ -1,0 +1,3 @@
+{{ define "alisms_summary" -}}
+[{{ .CommonLabels.severity }}]级别{{ .CommonLabels.alertname }}告警出现,所属板块[{{ .CommonLabels._pcg_catalog }}],所属应用[{{ .CommonLabels._pcg_app }}],环境[{{ .CommonLabels._pcg_environment }}],共{{ .Alerts | len }}个
+{{- end }}
