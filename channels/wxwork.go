@@ -39,8 +39,8 @@ type MarkDown struct {
 }
 
 type WxResponse struct {
-	ErrCode string `json:"err_code"`
-	ErrMsg  string `json:"err_msg"`
+	ErrCode int    `json:"errcode"`
+	ErrMsg  string `json:"errmsg"`
 }
 
 func SendWxWorkRobot(c *gin.Context) {
@@ -131,23 +131,23 @@ func SendWxWorkRobot(c *gin.Context) {
 		var wxrsp WxResponse
 		_ = json.Unmarshal(respDataRaw, &wxrsp)
 
-		if wxrsp.ErrCode == "0" {
+		if wxrsp.ErrCode == 0 {
 			log.WithFields(
 				logrus.Fields{
 					"key": key,
 				},
-			).Info("send wxworkrobot successful")
+			).Info("send wxwork-robot successful")
 		} else {
 			log.WithFields(
 				logrus.Fields{
 					"errcode": wxrsp.ErrCode,
 					"errmsg":  wxrsp.ErrMsg,
 				},
-			).Warn("send alisms failed")
+			).Warn("send wxwork-robot failed")
 			ErrKeys = append(ErrKeys, key)
 		}
 
-		c.JSON(http.StatusOK, gin.H{"errPhones": strings.Join(ErrKeys, ","), "all": len(keys), "err": len(ErrKeys)})
+		c.JSON(http.StatusOK, gin.H{"errKeys": strings.Join(ErrKeys, ","), "all": len(keys), "err": len(ErrKeys)})
 
 	}
 }
