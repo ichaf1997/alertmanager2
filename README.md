@@ -1,6 +1,6 @@
 # Alertmanager2
 
-Alertmanager Webhook with integration `AliSms` `AliVms` `WxworkRobot` `ElasticSearchAPI` etc.
+Alertmanager Webhook with integration `AliSms` `AliVms` `FeiShuRobot` `WxworkRobot` `ElasticSearchAPI` etc.
 
 ## Build
 

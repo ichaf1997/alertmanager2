@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"path/filepath"
 	"runtime"
+	"slices"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
 
-func LoggingMiddleware(logger *logrus.Logger) gin.HandlerFunc {
+func StructuredLoggerHandlerFunc() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		startTime := time.Now()
 		ctx.Next()
@@ -25,7 +26,7 @@ func LoggingMiddleware(logger *logrus.Logger) gin.HandlerFunc {
 		scriptName := filepath.Base(fn)
 		LogTrace := fmt.Sprintf("%s:%d", scriptName, line)
 
-		logger.WithFields(logrus.Fields{
+		logrus.WithFields(logrus.Fields{
 			"Method":    reqMethod,
 			"Uri":       reqUri,
 			"Status":    statusCode,
@@ -33,23 +34,23 @@ func LoggingMiddleware(logger *logrus.Logger) gin.HandlerFunc {
 			"ClientIP":  clientIP,
 			"UserAgent": userAgent,
 			"LogTrace":  LogTrace,
-		}).Info("Accept http request")
+		}).Info("Process request")
 		ctx.Next()
 	}
 }
 
-func DefaultLogger(loglevel string) *logrus.Logger {
-	logger := logrus.New()
-	logger.SetFormatter(&logrus.JSONFormatter{TimestampFormat: "2006-01-02 15:04:05"})
-	if LogLevel, err := logrus.ParseLevel(loglevel); err == nil {
-		logger.SetLevel(LogLevel)
-		if LogLevel == logrus.TraceLevel {
-			logger.SetReportCaller(true)
+func InitLogger(loglevel string, verbose bool) {
+	logrus.SetFormatter(&logrus.TextFormatter{
+		DisableColors:   true,
+		TimestampFormat: "2006-01-02 15:04:05",
+	})
+	if verbose {
+		logrus.SetReportCaller(true)
+		logrus.SetLevel(logrus.DebugLevel)
+	} else if LogLevel, err := logrus.ParseLevel(loglevel); err == nil {
+		if loglevelSlice := []int{2, 3, 4, 5}; slices.Contains(loglevelSlice, int(LogLevel)) {
+			logrus.SetLevel(LogLevel)
 		}
-	} else {
-		logger.SetLevel(logrus.InfoLevel)
 	}
-
-	return logger
-
+	logrus.Debugf("Initializing logger with %v", loglevel)
 }
