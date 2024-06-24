@@ -32,7 +32,7 @@ var (
 				localTemplate: utils.GetLocalTemplate(tmplDir),
 			}
 			if err := server.Start(listenAddress); err != nil {
-				logrus.Panicf("error starting alertmanager server: %v", err)
+				logrus.Panicf("error starting alertmanager2 server: %v", err)
 				os.Exit(1)
 			}
 		},
