@@ -35,5 +35,7 @@ func GetLocalTemplate(tmplDir string) *template.Template {
 		logrus.Errorf("Failed to parse template Dir %s with error %v", tmplDir, err)
 		return nil
 	}
+	logrus.Infof("Successfully parsed template path %s", tmplDir)
+	logrus.Debugf("template details: %s", t.DefinedTemplates())
 	return t
 }

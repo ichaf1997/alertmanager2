@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"os"
+
 	"github.com/spf13/cobra"
 )
 
@@ -11,6 +13,7 @@ var (
 	}
 	verbose  bool
 	loglevel string
+	pwd, _   = os.Getwd()
 )
 
 func Execute() {

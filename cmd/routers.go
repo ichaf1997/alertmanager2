@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/ichaf1997/alertmanager2/channels"
+	"github.com/ichaf1997/alertmanager2/media"
 )
 
 // func addAliCloudRoutes_v1(rg *gin.RouterGroup) {
@@ -24,10 +24,11 @@ import (
 
 // }
 
-func addBytesRoutes_v1(rg *gin.RouterGroup) {
+func (s *Server) addBytesRoutes_v1(rg *gin.RouterGroup) {
 
 	r := rg.Group("/feishu")
 
-	r.POST("/robot", channels.HelloWorld)
+	r.POST("/test", media.HelloWorld)
+	r.POST("/robot/:key", s.chs.FeiShuCustomRobotHandler())
 
 }
