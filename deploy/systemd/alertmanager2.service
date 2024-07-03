@@ -5,7 +5,6 @@ After=network.target
 [Service]
 Type=simple
 
-ExecReload=/bin/kill -HUP $MAINPID
 ExecStart=/usr/local/bin/alertmanager2
 Restart=always
 

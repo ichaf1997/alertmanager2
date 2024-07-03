@@ -1,6 +1,5 @@
 {{ define "feishu_card_webhook_url" }}
-
-{{ if gt (len .Alerts.Firing) 0 }}
+{{ if and (gt (len .Alerts.Firing) 0) (eq (len .Alerts.Resolved) 0) }}
 {
     "msg_type": "interactive",
     "card": {
@@ -9,42 +8,12 @@
             "zh_cn": [
                 {
                     "tag": "markdown",
-                    "content": "{{ range .Alerts.Firing }}- {{ .Labels.instance }} ({{ .Labels._gimc_description }})\n{{ end }}\n*关注人员：* <at id=all></at>"
+                    "content": "{{ range .Alerts.Firing -}}- {{ .Labels.instance }} ({{ .Labels._gimc_description }}) {{ (.StartsAt.Add 28800e9).Format "2006-01-02 15:04:05" }}\n{{- end }}\n*关注人员：* <at id=all></at>",
                     "text_align": "left",
                     "text_size": "normal"
                 },
                 {
                     "tag": "hr"
-                },
-                {
-                    "tag": "column_set",
-                    "flex_mode": "none",
-                    "horizontal_spacing": "default",
-                    "background_style": "default",
-                    "columns": [
-                        {
-                            "tag": "column",
-                            "elements": [
-                                {
-                                    "tag": "div",
-                                    "text": {
-                                        "tag": "plain_text",
-                                        "content": "{{ (.StartsAt.Add 28800e9).Format "2006-01-02 15:04:05" }}",
-                                        "text_size": "normal",
-                                        "text_align": "left",
-                                        "text_color": "grey"
-                                    },
-                                    "icon": {
-                                        "tag": "standard_icon",
-                                        "token": "time_outlined",
-                                        "color": "grey"
-                                    }
-                                }
-                            ],
-                            "width": "weighted",
-                            "weight": 1
-                        }
-                    ]
                 },
                 {
                     "tag": "action",
@@ -57,7 +26,7 @@
                                 "content": "在Grafana中打开"
                             },
                             "type": "primary",
-                            "complex_interaction": True,
+                            "complex_interaction": true,
                             "width": "default",
                             "size": "medium",
                             "icon": {
@@ -78,7 +47,7 @@
                                 "content": "静默告警"
                             },
                             "type": "primary",
-                            "complex_interaction": True,
+                            "complex_interaction": true,
                             "width": "default",
                             "size": "medium",
                             "icon": {
@@ -102,7 +71,7 @@
                                 "content": "配置告警"
                             },
                             "type": "primary",
-                            "complex_interaction": True,
+                            "complex_interaction": true,
                             "width": "default",
                             "size": "medium",
                             "icon": {
@@ -113,6 +82,12 @@
                             "disabled_tips": {
                                 "tag": "plain_text",
                                 "content": "敬请期待"
+                            },
+                            "multi_url": {
+                                "url": "https://配置告警",
+                                "pc_url": "",
+                                "ios_url": "",
+                                "android_url": ""
                             }
                         },
                         {
@@ -122,7 +97,7 @@
                                 "content": "操作手册"
                             },
                             "type": "primary",
-                            "complex_interaction": True,
+                            "complex_interaction": true,
                             "width": "default",
                             "size": "medium",
                             "icon": {
@@ -191,15 +166,14 @@
                 "template": "red",
                 "ud_icon": {
                     "tag": "standard_icon",
-                    "token": "sheet-iconsets-cross_filled"
+                    "token": "bell_filled"
                 }
             }
         }
     }
 }
 {{ end }}
-
-{{ if gt (len .Alerts.Resolved) 0 }}
+{{ if and (gt (len .Alerts.Resolved) 0) (eq (len .Alerts.Firing) 0) }}
 {
     "msg_type": "interactive",
     "card": {
@@ -208,42 +182,12 @@
             "zh_cn": [
                 {
                     "tag": "markdown",
-                    "content": "{{ range .Alerts.Resolved }}- {{ .Labels.instance }} ({{ .Labels._gimc_description }})\n{{ end }}\n*关注人员：* <at id=all></at>"
+                    "content": "{{ range .Alerts.Resolved -}}- {{ .Labels.instance }} ({{ .Labels._gimc_description }})[({{(.EndsAt.Sub .StartsAt).Truncate 1000000000}}) {{ (.StartsAt.Add 28800e9).Format "2006-01-02 15:04:05" }} ~ {{ (.EndsAt.Add 28800e9).Format "2006-01-02 15:04:05" }}]\n{{- end }}\n*关注人员：* <at id=all></at>",
                     "text_align": "left",
                     "text_size": "normal"
                 },
                 {
                     "tag": "hr"
-                },
-                {
-                    "tag": "column_set",
-                    "flex_mode": "none",
-                    "horizontal_spacing": "default",
-                    "background_style": "default",
-                    "columns": [
-                        {
-                            "tag": "column",
-                            "elements": [
-                                {
-                                    "tag": "div",
-                                    "text": {
-                                        "tag": "plain_text",
-                                        "content": "({{(.EndsAt.Sub .StartsAt).Truncate 1000000000}}) [ {{ (.StartsAt.Add 28800e9).Format "2006-01-02 15:04:05" }} ~ {{ (.EndsAt.Add 28800e9).Format "2006-01-02 15:04:05" }} ]",
-                                        "text_size": "normal",
-                                        "text_align": "left",
-                                        "text_color": "grey"
-                                    },
-                                    "icon": {
-                                        "tag": "standard_icon",
-                                        "token": "time_outlined",
-                                        "color": "grey"
-                                    }
-                                }
-                            ],
-                            "width": "weighted",
-                            "weight": 1
-                        }
-                    ]
                 },
                 {
                     "tag": "action",
@@ -256,7 +200,7 @@
                                 "content": "在Grafana中打开"
                             },
                             "type": "primary",
-                            "complex_interaction": True,
+                            "complex_interaction": true,
                             "width": "default",
                             "size": "medium",
                             "icon": {
@@ -277,7 +221,7 @@
                                 "content": "静默告警"
                             },
                             "type": "primary",
-                            "complex_interaction": True,
+                            "complex_interaction": true,
                             "width": "default",
                             "size": "medium",
                             "icon": {
@@ -301,7 +245,7 @@
                                 "content": "配置告警"
                             },
                             "type": "primary",
-                            "complex_interaction": True,
+                            "complex_interaction": true,
                             "width": "default",
                             "size": "medium",
                             "icon": {
@@ -312,6 +256,12 @@
                             "disabled_tips": {
                                 "tag": "plain_text",
                                 "content": "敬请期待"
+                            },
+                            "multi_url": {
+                                "url": "https://配置告警",
+                                "pc_url": "",
+                                "ios_url": "",
+                                "android_url": ""
                             }
                         },
                         {
@@ -321,7 +271,7 @@
                                 "content": "操作手册"
                             },
                             "type": "primary",
-                            "complex_interaction": True,
+                            "complex_interaction": true,
                             "width": "default",
                             "size": "medium",
                             "icon": {
@@ -397,5 +347,194 @@
     }
 }
 {{ end }}
-
+{{ if and (gt (len .Alerts.Firing) 0) (gt (len .Alerts.Resolved) 0) }}
+{
+    "msg_type": "interactive",
+    "card": {
+        "config": {},
+        "i18n_elements": {
+            "zh_cn": [
+                {
+                    "tag": "markdown",
+                    "content": "{{ range .Alerts.Firing -}}- {{ .Labels.instance }} ({{ .Labels._gimc_description }}) {{ (.StartsAt.Add 28800e9).Format "2006-01-02 15:04:05" }}\n{{- end }}\n*关注人员：* <at id=all></at>",
+                    "text_align": "left",
+                    "text_size": "normal",
+                    "icon": {
+                        "tag": "standard_icon",
+                        "token": "sheet-iconsets-cross_filled",
+                        "color": "red"
+                    }
+                },
+                {
+                    "tag": "hr"
+                },
+                {
+                    "tag": "markdown",
+                    "content": "{{ range .Alerts.Resolved -}}- {{ .Labels.instance }} ({{ .Labels._gimc_description }})[({{(.EndsAt.Sub .StartsAt).Truncate 1000000000}}) {{ (.StartsAt.Add 28800e9).Format "2006-01-02 15:04:05" }} ~ {{ (.EndsAt.Add 28800e9).Format "2006-01-02 15:04:05" }}]\n{{- end }}\n*关注人员：* <at id=all></at>",
+                    "text_align": "left",
+                    "text_size": "normal",
+                    "icon": {
+                        "tag": "standard_icon",
+                        "token": "sheet-iconsets-check_filled",
+                        "color": "green"
+                    }
+                },
+                {
+                    "tag": "action",
+                    "layout": "default",
+                    "actions": [
+                        {
+                            "tag": "button",
+                            "text": {
+                                "tag": "plain_text",
+                                "content": "在Grafana中打开"
+                            },
+                            "type": "primary",
+                            "complex_interaction": true,
+                            "width": "default",
+                            "size": "medium",
+                            "icon": {
+                                "tag": "standard_icon",
+                                "token": "forward_filled"
+                            },
+                            "multi_url": {
+                                "url": "http://grafana.gxdc.gimccloud.com/",
+                                "pc_url": "",
+                                "ios_url": "",
+                                "android_url": ""
+                            }
+                        },
+                        {
+                            "tag": "button",
+                            "text": {
+                                "tag": "plain_text",
+                                "content": "静默告警"
+                            },
+                            "type": "primary",
+                            "complex_interaction": true,
+                            "width": "default",
+                            "size": "medium",
+                            "icon": {
+                                "tag": "standard_icon",
+                                "token": "alerts-off_filled"
+                            },
+                            "hover_tips": {
+                                "tag": "plain_text",
+                                "content": "为本次告警创建静默，时长为1小时"
+                            },
+                            "disabled": true,
+                            "disabled_tips": {
+                                "tag": "plain_text",
+                                "content": "敬请期待"
+                            }
+                        },
+                        {
+                            "tag": "button",
+                            "text": {
+                                "tag": "plain_text",
+                                "content": "配置告警"
+                            },
+                            "type": "primary",
+                            "complex_interaction": true,
+                            "width": "default",
+                            "size": "medium",
+                            "icon": {
+                                "tag": "standard_icon",
+                                "token": "code_outlined"
+                            },
+                            "disabled": true,
+                            "disabled_tips": {
+                                "tag": "plain_text",
+                                "content": "敬请期待"
+                            },
+                            "multi_url": {
+                                "url": "https://配置告警",
+                                "pc_url": "",
+                                "ios_url": "",
+                                "android_url": ""
+                            }
+                        },
+                        {
+                            "tag": "button",
+                            "text": {
+                                "tag": "plain_text",
+                                "content": "操作手册"
+                            },
+                            "type": "primary",
+                            "complex_interaction": true,
+                            "width": "default",
+                            "size": "medium",
+                            "icon": {
+                                "tag": "standard_icon",
+                                "token": "lark-logo_colorful"
+                            },
+                            "disabled": true,
+                            "disabled_tips": {
+                                "tag": "plain_text",
+                                "content": "敬请期待"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "tag": "note",
+                    "elements": [
+                        {
+                            "tag": "standard_icon",
+                            "token": "pin_outlined"
+                        },
+                        {
+                            "tag": "plain_text",
+                            "content": "归属项目：{{ .CommonLabels._gimc_project }}    归属应用：{{ .CommonLabels._gimc_application }}"
+                        }
+                    ]
+                }
+            ]
+        },
+        "i18n_header": {
+            "zh_cn": {
+                "title": {
+                    "tag": "plain_text",
+                    "content": "告警通知[{{ .Alerts.Firing | len }}] - 恢复通知[{{ .Alerts.Resolved | len }}]"
+                },
+                "subtitle": {
+                    "tag": "plain_text",
+                    "content": "{{ .CommonAnnotations.summary }}"
+                },
+                "text_tag_list": [
+                    {
+                        "tag": "text_tag",
+                        "text": {
+                            "tag": "plain_text",
+                            "content": "{{ .CommonLabels.severity }}"
+                        },
+                        "color": "blue"
+                    },
+                    {
+                        "tag": "text_tag",
+                        "text": {
+                            "tag": "plain_text",
+                            "content": "指标"
+                        },
+                        "color": "purple"
+                    },
+                    {
+                        "tag": "text_tag",
+                        "text": {
+                            "tag": "plain_text",
+                            "content": "业务"
+                        },
+                        "color": "yellow"
+                    }
+                ],
+                "template": "orange",
+                "ud_icon": {
+                    "tag": "standard_icon",
+                    "token": "bell_filled"
+                }
+            }
+        }
+    }
+}
+{{ end }}
 {{ end }}

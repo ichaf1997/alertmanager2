@@ -47,22 +47,11 @@ spec:
           successThreshold: 1
           failureThreshold: 3
           periodSeconds: 10
-        env:
-        - name: ALICLOUD_AK
-          valueFrom:
-            secretKeyRef:
-              name: alertmanager2
-              key: ALICLOUD_AK
-        - name: ALICLOUD_AS
-          valueFrom:
-            secretKeyRef:
-              name: alertmanager2
-              key: ALICLOUD_AS
         ports:
         - containerPort: 8080
           name: alertmanager2
         command:
         - /app/alertmanager2
-        - --log.level=debug
+        - server
       restartPolicy: Always
 ---

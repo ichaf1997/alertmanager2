@@ -5,16 +5,11 @@ import (
 	"path/filepath"
 
 	"github.com/gin-gonic/gin"
-	"github.com/ichaf1997/alertmanager2/media"
+	"github.com/ichaf1997/alertmanager2/server"
 	"github.com/ichaf1997/alertmanager2/utils"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
-
-type Server struct {
-	engine *gin.Engine
-	chs    *media.Channel
-}
 
 var (
 	listenAddress string
@@ -27,41 +22,14 @@ var (
 			if logrus.GetLevel() != logrus.DebugLevel {
 				gin.SetMode(gin.ReleaseMode)
 			}
-			server := &Server{
-				engine: gin.New(),
-				chs:    media.NewChannel(utils.GetLocalTemplate(tmplDir)),
-			}
-			if err := server.Start(listenAddress); err != nil {
+			s := server.NewServer(listenAddress, utils.GetLocalTemplate(tmplDir))
+			if err := s.Start(listenAddress); err != nil {
 				logrus.Panicf("error starting alertmanager2 server: %v", err)
 				os.Exit(1)
 			}
 		},
 	}
 )
-
-// func (server *Server) RegisterRoute() {
-
-// 	server.engine.Use(gin.Recovery(), utils.StructuredLoggerHandlerFunc())
-
-// 	server.engine.GET(
-// 		"/_status/healthz",
-// 		func(c *gin.Context) {
-// 			c.JSON(http.StatusOK, gin.H{"status": "healthy"})
-// 		},
-// 	)
-
-// 	v1 := server.engine.Group("/v1/channel")
-// 	// addAliCloudRoutes_v1(v1)
-// 	// addWxworkRoutes_v1(v1)
-// 	server.addBytesRoutes_v1(v1)
-
-// }
-
-func (server *Server) Start(address string) error {
-	server.RegisterRoute()
-	logrus.Infof("Listening and serving HTTP on %s", address)
-	return server.engine.Run(address)
-}
 
 func init() {
 	rootCmd.AddCommand(serverCmd)

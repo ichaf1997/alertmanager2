@@ -8,18 +8,16 @@ import (
 )
 
 type Notification struct {
-	Receiver          string           `json:"receiver"`
-	Status            string           `json:"status"`
-	Alerts            Alerts           `json:"alerts"`
-	GroupLabels       alertTemplate.KV `json:"groupLabels"`
-	CommonLabels      alertTemplate.KV `json:"commonLabels"`
-	CommonAnnotations alertTemplate.KV `json:"commonAnnotations"`
-	ExternalURL       string           `json:"externalURL"`
-	Version           string           `json:"version"`
-	GroupKey          string           `json:"groupKey"`
+	Receiver          string               `json:"receiver"`
+	Status            string               `json:"status"`
+	Alerts            alertTemplate.Alerts `json:"alerts"`
+	GroupLabels       alertTemplate.KV     `json:"groupLabels"`
+	CommonLabels      alertTemplate.KV     `json:"commonLabels"`
+	CommonAnnotations alertTemplate.KV     `json:"commonAnnotations"`
+	ExternalURL       string               `json:"externalURL"`
+	Version           string               `json:"version"`
+	GroupKey          string               `json:"groupKey"`
 }
-
-type Alerts alertTemplate.Alerts
 
 func ParseLocalTemplate(tmplDir string) (*template.Template, error) {
 	t, err := template.New("local").Funcs(template.FuncMap(alertTemplate.DefaultFuncs)).ParseGlob(tmplDir)

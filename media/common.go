@@ -6,20 +6,20 @@ import (
 
 type Medium interface {
 	SendMsg() error
-	Info() any
 }
 
-type Channel struct {
+type Handler struct {
 	template *template.Template
 }
 
 type Response struct {
-	RequestInfo any    `json:"request_info"`
-	Status      string `json:"status"`
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+	Data    any    `json:"data"`
 }
 
-func NewChannel(tmpl *template.Template) *Channel {
-	return &Channel{
+func NewHandler(tmpl *template.Template) *Handler {
+	return &Handler{
 		template: tmpl,
 	}
 }
